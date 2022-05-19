@@ -4,19 +4,23 @@ import pathlib
 import os
 from statemachine import *
 import sys
-import hashlib
 import threading
+import parser
 
 # First we should op en a file and read the content
 # Then we should send the content via UDP to the server
 ip = "127.0.0.1"
 
-filename = pathlib.Path("/home/lars/test/device.bin")
+filename = pathlib.Path("/home/lars/test/child.bin")
 sm = ThreadStateMachine(Thread.states[0])
 
 
-def proxy(listenport, servport):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+def proxy(listenport):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
+
+    bin = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    bin.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 2)
 
     aflnet = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     aflnet.bind((ip, listenport))
@@ -24,9 +28,12 @@ def proxy(listenport, servport):
     while True:
         data, addr = aflnet.recvfrom(1024)  # buffer size is 1024 bytes
         print(data)
-        sock.sendto(data, (ip, servport))
+        sock.sendto(data, (ip, 5001))
+        bin.sendto(data, (ip,7331))
 
 def superduper(port):
+    sock = socket.socket(socket.AF_INET,
+                         socket.SOCK_DGRAM)
     i = inotify.adapters.Inotify()
     if not os.path.isfile(filename):
         with open(filename, "w+") as f:
@@ -39,12 +46,9 @@ def superduper(port):
         if "IN_CLOSE_WRITE" in type_names or "IN_MOVE_SELF" in type_names or "IN_MODIFY" in type_names:
             # Read file, its in binary format
             with open(filename, "rb") as f:
-                sock = socket.socket(socket.AF_INET,
-                                     socket.SOCK_DGRAM)
                 content = f.read()
                 print(content)
                 sock.sendto(content, (ip, port))
-                print("File sent to server")
         else:
             # check what files are in notify watchlist
             try:
@@ -62,19 +66,15 @@ def _main():
         return -1
 
     id = int(sys.argv[1])
-    listenport = 9000 + id
-    servport = 5000 + id
+    listenport = 10000 + id
     port = 4000 + id
 
     print("Id of this device is: ", id)
     print("Listen port is: ", listenport)
-    print("Serv port is: ", servport)
     print("Aflnet local port is:", port)
-
     thread = threading.Thread(target=superduper, args=(port,))
-    #thread = threading.Thread(target=proxy, args=(listenport, servport))
     thread.start()
-    proxy(listenport, servport)
+    proxy(listenport)
 
 
 
