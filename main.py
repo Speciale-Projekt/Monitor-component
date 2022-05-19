@@ -1,11 +1,13 @@
-import socket
-import inotify.adapters
-import pathlib
 import os
-from statemachine import *
+import pathlib
+import socket
 import sys
 import threading
-import parser
+
+import inotify.adapters
+
+from statemachine import *
+import parser as p
 
 # First we should op en a file and read the content
 # Then we should send the content via UDP to the server
@@ -27,9 +29,11 @@ def proxy(listenport):
 
     while True:
         data, addr = aflnet.recvfrom(1024)  # buffer size is 1024 bytes
-        print(data)
+        res = p.assign_command_type(data)
+        print(res)
         sock.sendto(data, (ip, 5001))
-        bin.sendto(data, (ip,7331))
+        bin.sendto(data, (ip, 7331))
+
 
 def superduper(port):
     sock = socket.socket(socket.AF_INET,
@@ -60,6 +64,7 @@ def superduper(port):
                 with open(filename, "w+") as f:
                     pass  # remove old watch, and add new watch to same file
 
+
 def _main():
     if len(sys.argv) == 1:
         print("Please provide the id for the Thread Device")
@@ -75,7 +80,6 @@ def _main():
     thread = threading.Thread(target=superduper, args=(port,))
     thread.start()
     proxy(listenport)
-
 
 
 if __name__ == '__main__':
