@@ -1,4 +1,6 @@
 import pathlib
+from commands import Commands
+from tlvs import TLVS
 
 
 def read_file(file_name: pathlib.Path) -> bin:
@@ -13,9 +15,10 @@ def print_hex(data: bin) -> str:
     return " ".join(["{:02X}".format(x) for x in data])
 
 
-def assign_command_type(message: bin, res=None) -> list:
+def assign_command_type(message: bin, res=None) -> list[dict]:
     """
     Assign the command type and the TLV names to the message.
+    :param res:
     :param message:
     :return: command and tlvs
     """
@@ -35,43 +38,43 @@ def assign_command_type(message: bin, res=None) -> list:
         if next_message_index is not None:
             next_message_index += 12
     if command_type == b'\x00':
-        command = {"command_index": 0, "name": "Link Request"}
+        command = Commands.LINK_REQUEST
     elif command_type == b'\x01':
-        command = {"command_index": 1, "name": "Link Accept"}
+        command = Commands.LINK_ACCEPT
     elif command_type == b'\x02':
-        command = {"command_index": 2, "name": "Link Accept and Request"}
+        command = Commands.LINK_ACCEPT_AND_REQUEST
     elif command_type == b'\x03':
-        command = {"command_index": 3, "name": "Link Reject"}
+        command = Commands.LINK_REJECT
     elif command_type == b'\x04':
-        command = {"command_index": 4, "name": "Advertisement"}
+        command = Commands.ADVERTISEMENT
     elif command_type == b'\x05':
-        command = {"command_index": 5, "name": "Update"}
+        command = Commands.UPDATE
     elif command_type == b'\x06':
-        command = {"command_index": 6, "name": "Update Request"}
+        command = Commands.UPDATE_REQUEST
     elif command_type == b'\x07':
-        command = {"command_index": 7, "name": "Data Request"}
+        command = Commands.DATA_REQUEST
     elif command_type == b'\x08':
-        command = {"command_index": 8, "name": "Data Response"}
+        command = Commands.DATA_RESPONSE
     elif command_type == b'\x09':
-        command = {"command_index": 9, "name": "Parent Request"}
+        command = Commands.PARENT_REQUEST
     elif command_type == b'\x0A':
-        command = {"command_index": 10, "name": "Parent Response"}
+        command = Commands.PARENT_RESPONSE
     elif command_type == b'\x0B':
-        command = {"command_index": 11, "name": "Child ID Request"}
+        command = Commands.CHILD_ID_REQUEST
     elif command_type == b'\x0C':
-        command = {"command_index": 12, "name": "Child ID Response"}
+        command = Commands.CHILD_ID_RESPONSE
     elif command_type == b'\x0D':
-        command = {"command_index": 13, "name": "Child Update Request"}
+        command = Commands.CHILD_UPDATE_REQUEST
     elif command_type == b'\x0E':
-        command = {"command_index": 14, "name": "Child Update Response"}
+        command = Commands.CHILD_UPDATE_RESPONSE
     elif command_type == b'\x0F':
-        command = {"command_index": 15, "name": "Announce"}
+        command = Commands.ANNOUNCE
     elif command_type == b'\x10':
-        command = {"command_index": 16, "name": "Discovery Request"}
+        command = Commands.DISCOVERY_REQUEST
     elif command_type == b'\x11':
-        command = {"command_index": 17, "name": "Discovery Response"}
+        command = Commands.DISCOVERY_RESPONSE
     else:
-        command = {"command_index": -1, "name": "Unknown command type"}
+        command = Commands.UNKNOWN
     res.append({**command, **{"tlvs": tlvs}, **{"total_message": print_hex(message[0:next_message_index])}})
     if next_message_index is not None:
         return assign_command_type(message[next_message_index:], res)
@@ -79,7 +82,7 @@ def assign_command_type(message: bin, res=None) -> list:
         return res
 
 
-def get_tlvs(msg: bin, next_index=0, res=None) -> (int, list):
+def get_tlvs(msg: bin, next_index=0, res=None) -> (int, list[dict]):
     """
     Parse the message and return a list of TLVs.
     :param next_index: the index of the next message
@@ -98,87 +101,87 @@ def get_tlvs(msg: bin, next_index=0, res=None) -> (int, list):
         return next_index, res
     if msg[type_loc] == 0:
         # Source Address TLV
-        tlv_type = "Source Address TLV"
+        tlv_type = TLVS.SOURCE_ADDRESS
     elif msg[type_loc] == 1:
         # Mode TLV
-        tlv_type = "Mode TLV"
+        tlv_type = TLVS.MODE
     elif msg[type_loc] == 2:
         # Timeout TLV
-        tlv_type = "Timeout TLV"
+        tlv_type = TLVS.TIMEOUT
     elif msg[type_loc] == 3:
         # Challenge TLV
-        tlv_type = "Challenge TLV"
+        tlv_type = TLVS.CHALLENGE
     elif msg[type_loc] == 4:
         # Response TLV
-        tlv_type = "Response TLV"
+        tlv_type = TLVS.RESPONSE
     elif msg[type_loc] == 5:
         # Link-layer Frame Counter TLV
-        tlv_type = "Link-layer Frame Counter TLV"
+        tlv_type = TLVS.LINK_LAYER_FRAME_COUNTER
     elif msg[type_loc] == 6:
         # Link Quality TLV
-        tlv_type = "Link Quality TLV"
+        tlv_type = TLVS.LINK_QUALITY
     elif msg[type_loc] == 7:
         # Network Parameter TLV
-        tlv_type = "Network Parameter TLV"
+        tlv_type = TLVS.NETWORK_PARAMETER
     elif msg[type_loc] == 8:
         # MLE Frame Counter TLV
-        tlv_type = "MLE Frame Counter TLV"
+        tlv_type = TLVS.MLE_FRAME_COUNTER
     elif msg[type_loc] == 9:
         # Route64 TLV
-        tlv_type = "Route64 TLV"
+        tlv_type = TLVS.ROUTE64
     elif msg[type_loc] == 10:
         # Address16 TLV
-        tlv_type = "Address16 TLV"
+        tlv_type = TLVS.ADDRESS16
     elif msg[type_loc] == 11:
         # Leader Data TLV
-        tlv_type = "Leader Data TLV"
+        tlv_type = TLVS.LEADER_DATA
     elif msg[type_loc] == 12:
         # Network Data TLV
-        tlv_type = "Network Data TLV"
+        tlv_type = TLVS.NETWORK_DATA
     elif msg[type_loc] == 13:
         # TLV Request TLV
-        tlv_type = "TLV Request TLV"
+        tlv_type = TLVS.TLV_REQUEST
     elif msg[type_loc] == 14:
         # Scan Mask TLV
-        tlv_type = "Scan Mask TLV"
+        tlv_type = TLVS.SCAN_MASK
     elif msg[type_loc] == 15:
         # Connectivity TLV
-        tlv_type = "Connectivity TLV"
+        tlv_type = TLVS.CONNECTIVITY
     elif msg[type_loc] == 16:
         # Link Margin TLV
-        tlv_type = "Link Margin TLV"
+        tlv_type = TLVS.LINK_MARGIN
     elif msg[type_loc] == 17:
         # Status TLV
-        tlv_type = "Status TLV"
+        tlv_type = TLVS.STATUS
     elif msg[type_loc] == 18:
         # Version TLV
-        tlv_type = "Version TLV"
+        tlv_type = TLVS.VERSION
     elif msg[type_loc] == 19:
         # Address Registration TLV
-        tlv_type = "Address Registration TLV"
+        tlv_type = TLVS.ADDRESS_REGISTRATION
     elif msg[type_loc] == 20:
         # Channel TLV
-        tlv_type = "Channel TLV"
+        tlv_type = TLVS.CHANNEL
     elif msg[type_loc] == 21:
         # PAN ID TLV
-        tlv_type = "PAN ID TLV"
+        tlv_type = TLVS.PAN_ID
     elif msg[type_loc] == 22:
         # Active Timestamp TLV
-        tlv_type = "Active Timestamp TLV"
+        tlv_type = TLVS.ACTIVE_TIMESTAMP
     elif msg[type_loc] == 23:
         # Pending Timestamp TLV
-        tlv_type = "Pending Timestamp TLV"
+        tlv_type = TLVS.PENDING_TIMESTAMP
     elif msg[type_loc] == 24:
         # Active Operational Dataset TLV
-        tlv_type = "Active Operational Dataset TLV"
+        tlv_type = TLVS.ACTIVE_OPERATIONAL_DATASET
     elif msg[type_loc] == 25:
         # Pending Operational Dataset TLV
-        tlv_type = "Pending Operational Dataset TLV"
+        tlv_type = TLVS.PENDING_OPERATIONAL_DATASET
     elif msg[type_loc] == 26:
         # Thread Discovery TLV
-        tlv_type = "Thread Discovery TLV"
+        tlv_type = TLVS.THREAD_DISCOVERY
     else:
-        tlv_type = "Unknown TLV"
+        tlv_type = TLVS.UNKNOWN
     tlv_length = msg[length_loc]
     tlv_value = msg[length_loc + 1:2 + tlv_length]
     res.append({"type": tlv_type, "length": tlv_length, "value": tlv_value})

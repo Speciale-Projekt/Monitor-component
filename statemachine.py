@@ -1,32 +1,16 @@
+import commands
+from tlvs import TLVS
+from commands import Commands
+
 class Thread:
     states = ["Idle", "Processing_Discover", "Processing_Parent_Request", "Processing_ChildID_Request"]
     events = {
-        "Discover_Request": "Processing_Discover",
-        "Discover_Response": "Idle",
-        "Parent_Request": "Processing_Parent_Request",
-        "Parent_Response": "Idle",
-        "Child_ID_Request": "Processing_ChildID_Request",
-        "Child_ID_Response": "Idle"
-    }
-    command_types = {
-        0: "Link_Request",
-        1: "Link_Accept",
-        2: "Link_Accept_and_Request",
-        3: "Link_Reject",
-        4: "Advertisement",
-        5: "Update",
-        6: "Update_Request",
-        7: "Data_Request",
-        8: "Data_Response",
-        9: "Parent_Request",
-        10: "Parent_Response",
-        11: "Child_ID_Request",
-        12: "Child_ID_Response",
-        13: "Child_Update_Request",
-        14: "Child_Update_Response",
-        15: "Announce",
-        16: "Discovery_Request",
-        17: "Discovery_Response",
+        Commands.DISCOVERY_REQUEST: "Processing_Discover",
+        Commands.DISCOVERY_RESPONSE: "Idle",
+        Commands.PARENT_REQUEST: "Processing_Parent_Request",
+        Commands.PARENT_RESPONSE: "Idle",
+        Commands.CHILD_ID_REQUEST: "Processing_ChildID_Request",
+        Commands.CHILD_ID_RESPONSE: "Idle"
     }
 
 
@@ -37,16 +21,16 @@ class ThreadTransition:
         self.to_state = to_state
 
 
-def get_command_type(content):
+def get_command_type(content) -> Commands:
     if content[0] == 255:
-        type = content[1]
+        command_type = Commands.get_by_value(content[1])
     elif content[0] == 0:
-        type = content[11]
+        command_type = Commands.get_by_value(content[11])
     else:
-        type = -1
+        command_type = Commands.UNKNOWN
 
-    if type >= 0:
-        return Thread.command_types.get(type)
+    if command_type.value >= 0:
+        return command_type
 
 
 class ThreadStateMachine:
