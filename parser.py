@@ -15,7 +15,7 @@ def print_hex(data: bin) -> str:
     return " ".join(["{:02X}".format(x) for x in data])
 
 
-def assign_command_type(message: bin, res=None) -> list[dict]:
+def assign_command_type(message: bin, res=None) -> list:
     """
     Assign the command type and the TLV names to the message.
     :param res:
@@ -75,14 +75,15 @@ def assign_command_type(message: bin, res=None) -> list[dict]:
         command = Commands.DISCOVERY_RESPONSE
     else:
         command = Commands.UNKNOWN
-    res.append({**command, **{"tlvs": tlvs}, **{"total_message": print_hex(message[0:next_message_index])}})
+
+    res.append({"Name":command, **{"tlvs": tlvs}, **{"total_message": print_hex(message[0:next_message_index])}})
     if next_message_index is not None:
         return assign_command_type(message[next_message_index:], res)
     else:
         return res
 
 
-def get_tlvs(msg: bin, next_index=0, res=None) -> (int, list[dict]):
+def get_tlvs(msg: bin, next_index=0, res=None) -> (int, list):
     """
     Parse the message and return a list of TLVs.
     :param next_index: the index of the next message

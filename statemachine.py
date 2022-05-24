@@ -1,6 +1,5 @@
-import commands
-from tlvs import TLVS
 from commands import Commands
+
 
 class Thread:
     states = ["Idle", "Processing_Discover", "Processing_Parent_Request", "Processing_ChildID_Request"]
@@ -15,22 +14,10 @@ class Thread:
 
 
 class ThreadTransition:
-    def __init__(self, from_state, event, to_state):
+    def __init__(self, from_state:str, event:str, to_state:str):
         self.from_state = from_state
         self.event = event
         self.to_state = to_state
-
-
-def get_command_type(content) -> Commands:
-    if content[0] == 255:
-        command_type = Commands.get_by_value(content[1])
-    elif content[0] == 0:
-        command_type = Commands.get_by_value(content[11])
-    else:
-        command_type = Commands.UNKNOWN
-
-    if command_type.value >= 0:
-        return command_type
 
 
 class ThreadStateMachine:
@@ -38,17 +25,13 @@ class ThreadStateMachine:
         self.curr_state = curr_state
         self.transitions = []
 
-    def event_handler(self, event):
-        self.transitions.append(ThreadTransition(self.curr_state, event, Thread.events.get(event)))
-
-    def advance_state(self, content):
-        commandtype = get_command_type(content)
-        self.transitions.append(ThreadTransition(self.curr_state, commandtype, Thread.events.get(commandtype)))
+    def advance_state(self, cmd_type):
+        self.transitions.append(ThreadTransition(self.curr_state, cmd_type, Thread.events.get(cmd_type)))
 
     def to_str(self):
-        output = "",
+        output = ""
         for transition in self.transitions:
-            t = ThreadTransition(transition)
-            output = output + " --" + t.event + "--> " "("+t.to_state+")"
+            transition: ThreadTransition
+            output = output + " --" + transition.event.__str__() + "--> " "(" + transition.to_state + ")"
 
         return output
