@@ -18,7 +18,7 @@ ip = "127.0.0.1"
 filename = pathlib.Path("child.bin")
 log = pathlib.Path("log.txt")
 sm = ThreadStateMachine(Thread.states[0])
-openthread_args = '/mnt/c/Users/larsb/CLionProjects/openthread/output/simulation/bin/ot-cli-ftd 1 --master --dataset ' \
+openthread_args = '../openthread/output/simulation/bin/ot-cli-ftd 1 --master --dataset ' \
                   '"{\\"Network_Key\\": \\"cf70867da8d41fbdb614aa9677addf9e\\", \\"PAN_ID\\": \\"0x7063\\"}" '
 
 rcode = 0
