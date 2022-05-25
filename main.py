@@ -8,7 +8,7 @@ import time
 
 import inotify.adapters
 
-from statemachine import *
+from Statemachine.statemachine import *
 import parser as p
 
 # First we should op en a file and read the content

@@ -1,4 +1,4 @@
-from commands import Commands
+from Enums.commands import Commands
 
 
 class Thread:

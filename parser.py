@@ -1,6 +1,6 @@
 import pathlib
-from commands import Commands
-from tlvs import TLVS
+from Enums.commands import Commands
+from Enums.tlvs import TLVS
 
 
 def read_file(file_name: pathlib.Path) -> bin:
@@ -185,7 +185,7 @@ def get_tlvs(msg: bin, next_index=0, res=None) -> (int, list):
         tlv_type = TLVS.UNKNOWN
     tlv_length = msg[length_loc]
     tlv_value = msg[length_loc + 1:2 + tlv_length]
-    res.append({"type": tlv_type, "length": tlv_length, "value": tlv_value})
+    res.append({"type": tlv_type, "length": tlv_length, "value": print_hex(tlv_value)})
 
     next_index += tlv_length + 2
 
