@@ -106,7 +106,7 @@ class Message:
         return "Message(command={}, tlvs={})".format(self.command, self.tlvs)
 
 
-def valid_order_for_messages(previous_message: Message, this_message: Message) -> (bool, str | None):
+def valid_order_for_messages(previous_message: Message, this_message: Message):
     """
     Derives the previous message in message_commands_succession,
     then it returns a bool if the previous message is the correct one
