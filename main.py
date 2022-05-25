@@ -60,7 +60,10 @@ def communication_aflnet(listenport):
             print(type)
             with open(log, "a+") as f:
                 print("Crash?")
-                f.write(res.__str__())
+                f.write("----- ----- ----- ----- ----- "+"\n")
+                f.write("Crashed with rcpde: " + str(rcode) +"\n")
+                f.write(res.__str__() + "\n")
+                f.write("----- ----- ----- ----- -----\n")
             rcode = 0
 
 
