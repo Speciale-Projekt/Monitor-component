@@ -1,4 +1,3 @@
-import
 ip = "0.0.0.0"
 
 def proxy(listenport, servport):
