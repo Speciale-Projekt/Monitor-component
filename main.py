@@ -93,7 +93,8 @@ def communication_OT(port):
                     msg: Message = Message()
                     msg.tlvs = cmd_type[0].get('tlvs')
                     msg.command = cmd_type[0].get('Name')
-
+                    if not prev_message:
+                        continue
                     if not valid_order_for_messages(prev_message, msg):
                         print("Invalid order")
                         with open("stmch_crash.txt", "a+") as file:
