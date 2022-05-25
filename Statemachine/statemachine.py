@@ -14,7 +14,7 @@ class Thread:
 
 
 class ThreadTransition:
-    def __init__(self, from_state:str, event:str, to_state:str):
+    def __init__(self, from_state: str, event: str, to_state: str):
         self.from_state = from_state
         self.event = event
         self.to_state = to_state

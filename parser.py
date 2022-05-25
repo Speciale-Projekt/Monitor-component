@@ -102,87 +102,87 @@ def get_tlvs(msg: bin, next_index=0, res=None) -> (int, list):
         return next_index, res
     if msg[type_loc] == 0:
         # Source Address TLV
-        tlv_type = TLVS.SOURCE_ADDRESS
+        tlv_type = TLVS.SOURCE_ADDRESS_TLV
     elif msg[type_loc] == 1:
         # Mode TLV
-        tlv_type = TLVS.MODE
+        tlv_type = TLVS.MODE_TLV
     elif msg[type_loc] == 2:
         # Timeout TLV
-        tlv_type = TLVS.TIMEOUT
+        tlv_type = TLVS.TIMEOUT_TLV
     elif msg[type_loc] == 3:
         # Challenge TLV
-        tlv_type = TLVS.CHALLENGE
+        tlv_type = TLVS.CHALLENGE_TLV
     elif msg[type_loc] == 4:
         # Response TLV
-        tlv_type = TLVS.RESPONSE
+        tlv_type = TLVS.RESPONSE_TLV
     elif msg[type_loc] == 5:
         # Link-layer Frame Counter TLV
-        tlv_type = TLVS.LINK_LAYER_FRAME_COUNTER
+        tlv_type = TLVS.LINK_LAYER_FRAME_COUNTER_TLV
     elif msg[type_loc] == 6:
         # Link Quality TLV
-        tlv_type = TLVS.LINK_QUALITY
+        tlv_type = TLVS.LINK_QUALITY_TLV
     elif msg[type_loc] == 7:
         # Network Parameter TLV
-        tlv_type = TLVS.NETWORK_PARAMETER
+        tlv_type = TLVS.NETWORK_PARAMETER_TLV
     elif msg[type_loc] == 8:
         # MLE Frame Counter TLV
-        tlv_type = TLVS.MLE_FRAME_COUNTER
+        tlv_type = TLVS.MLE_FRAME_COUNTER_TLV
     elif msg[type_loc] == 9:
         # Route64 TLV
-        tlv_type = TLVS.ROUTE64
+        tlv_type = TLVS.ROUTE64_TLV
     elif msg[type_loc] == 10:
         # Address16 TLV
-        tlv_type = TLVS.ADDRESS16
+        tlv_type = TLVS.ADDRESS16_TLV
     elif msg[type_loc] == 11:
         # Leader Data TLV
-        tlv_type = TLVS.LEADER_DATA
+        tlv_type = TLVS.LEADER_DATA_TLV
     elif msg[type_loc] == 12:
         # Network Data TLV
-        tlv_type = TLVS.NETWORK_DATA
+        tlv_type = TLVS.NETWORK_DATA_TLV
     elif msg[type_loc] == 13:
         # TLV Request TLV
-        tlv_type = TLVS.TLV_REQUEST
+        tlv_type = TLVS.TLV_REQUEST_TLV
     elif msg[type_loc] == 14:
         # Scan Mask TLV
-        tlv_type = TLVS.SCAN_MASK
+        tlv_type = TLVS.SCAN_MASK_TLV
     elif msg[type_loc] == 15:
         # Connectivity TLV
-        tlv_type = TLVS.CONNECTIVITY
+        tlv_type = TLVS.CONNECTIVITY_TLV
     elif msg[type_loc] == 16:
         # Link Margin TLV
-        tlv_type = TLVS.LINK_MARGIN
+        tlv_type = TLVS.LINK_MARGIN_TLV
     elif msg[type_loc] == 17:
         # Status TLV
-        tlv_type = TLVS.STATUS
+        tlv_type = TLVS.STATUS_TLV
     elif msg[type_loc] == 18:
         # Version TLV
-        tlv_type = TLVS.VERSION
+        tlv_type = TLVS.VERSION_TLV
     elif msg[type_loc] == 19:
         # Address Registration TLV
-        tlv_type = TLVS.ADDRESS_REGISTRATION
+        tlv_type = TLVS.ADDRESS_REGISTRATION_TLV
     elif msg[type_loc] == 20:
         # Channel TLV
-        tlv_type = TLVS.CHANNEL
+        tlv_type = TLVS.CHANNEL_TLV
     elif msg[type_loc] == 21:
         # PAN ID TLV
-        tlv_type = TLVS.PAN_ID
+        tlv_type = TLVS.PAN_ID_TLV
     elif msg[type_loc] == 22:
         # Active Timestamp TLV
-        tlv_type = TLVS.ACTIVE_TIMESTAMP
+        tlv_type = TLVS.ACTIVE_TIMESTAMP_TLV
     elif msg[type_loc] == 23:
         # Pending Timestamp TLV
-        tlv_type = TLVS.PENDING_TIMESTAMP
+        tlv_type = TLVS.PENDING_TIMESTAMP_TLV
     elif msg[type_loc] == 24:
         # Active Operational Dataset TLV
-        tlv_type = TLVS.ACTIVE_OPERATIONAL_DATASET
+        tlv_type = TLVS.ACTIVE_OPERATIONAL_DATASET_TLV
     elif msg[type_loc] == 25:
         # Pending Operational Dataset TLV
-        tlv_type = TLVS.PENDING_OPERATIONAL_DATASET
+        tlv_type = TLVS.PENDING_OPERATIONAL_DATASET_TLV
     elif msg[type_loc] == 26:
         # Thread Discovery TLV
-        tlv_type = TLVS.THREAD_DISCOVERY
+        tlv_type = TLVS.THREAD_DISCOVERY_TLV
     else:
-        tlv_type = TLVS.UNKNOWN
+        tlv_type = TLVS.UNKNOWN_TLV
     tlv_length = msg[length_loc]
     tlv_value = msg[length_loc + 1:2 + tlv_length]
     res.append({"type": tlv_type, "length": tlv_length, "value": print_hex(tlv_value)})
