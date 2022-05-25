@@ -1,15 +1,15 @@
 import os
 import pathlib
 import socket
+import subprocess
 import sys
 import threading
-import subprocess
-import time
 
 import inotify.adapters
 
-from Statemachine.statemachine import *
 import parser as p
+from Statemachine.rules import valid_order_for_messages, Message, message_commands_succession
+from Statemachine.statemachine import *
 
 # First we should op en a file and read the content
 # Then we should send the content via UDP to the server
@@ -22,6 +22,7 @@ openthread_args = '../openthread/output/simulation/bin/ot-cli-ftd 1 --master --d
                   '"{\\"Network_Key\\": \\"cf70867da8d41fbdb614aa9677addf9e\\", \\"PAN_ID\\": \\"0x7063\\"}" '
 
 rcode = 0
+prev_package: Message
 
 
 def openthread():
@@ -31,7 +32,7 @@ def openthread():
         print(rcode)
 
 
-def proxy(listenport):
+def communication_aflnet(listenport):
     global rcode
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -47,6 +48,12 @@ def proxy(listenport):
             # sm.advance_state(res[0]['Name'])
             # print(sm.to_str())
             sock.sendto(data, (ip, 5001))
+            global prev_message
+            msg = Message()
+            msg.tlvs = res[0].get('tlvs')
+            msg.command = res[0].get('Name')
+            prev_message = msg
+
         except:
             pass
         if rcode != 0:
@@ -57,7 +64,7 @@ def proxy(listenport):
             rcode = 0
 
 
-def superduper(port):
+def communication_OT(port):
     sock = socket.socket(socket.AF_INET,
                          socket.SOCK_DGRAM)
     i = inotify.adapters.Inotify()
@@ -80,6 +87,24 @@ def superduper(port):
                     # sm.advance_state(cmd_type[0]['Name'])
                     sock.sendto(content, (ip, port))
                     bin.sendto(content, (ip, 7331))
+                    msg: Message = Message()
+                    msg.tlvs = cmd_type[0].get('tlvs')
+                    msg.command = cmd_type[0].get('Name')
+
+                    if not valid_order_for_messages(prev_message, msg):
+                        print("Invalid order")
+                        with open("stmch_crash.txt", "a+") as file:
+                            file.write(
+                                f"{'-' * 38}\n"
+                                f"------ Invalid order detected! -------\n"
+                                f"{'-' * 20}\n"
+                                f"{prev_message.__str__()}\n"
+                                f"resulted in: {msg.__str__()}\n"
+                                "expected:" + f'\n\t-'.join([key for key in
+                                                             message_commands_succession[prev_message.command].get(
+                                                                 'succession').keys()]) + "\n"
+
+                            )
 
         else:
             # check what files are in notify watchlist
@@ -106,10 +131,10 @@ def _main():
     print("Listen port is: ", listenport)
     print("Aflnet local port is:", port)
     openthreadthread = threading.Thread(target=openthread)
-    thread = threading.Thread(target=superduper, args=(port,))
+    thread = threading.Thread(target=communication_OT, args=(port,))
     thread.start()
     openthreadthread.start()
-    proxy(listenport)
+    communication_aflnet(listenport)
 
 
 if __name__ == '__main__':
