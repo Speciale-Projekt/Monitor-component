@@ -5,7 +5,7 @@ from Enums.tlvs import TLVS
 
 
 class ContainedTLVS:
-    def __init__(self, optional_tlvs: list[TLVS] = None, mandatory_tlvs: list[TLVS] = None):
+    def __init__(self, optional_tlvs: list = None, mandatory_tlvs: list = None):
         if mandatory_tlvs is None:
             mandatory_tlvs = []
         if optional_tlvs is None:
@@ -13,7 +13,7 @@ class ContainedTLVS:
         self.optional_tlvs = optional_tlvs
         self.mandatory_tlvs = mandatory_tlvs
 
-    def validate(self, tlvs: list[TLVS]) -> bool:
+    def validate(self, tlvs: list) -> bool:
         """
         Checks if all mandatory TLV's are present, and that there are no TLVs not present in either the mandatory or
         optional list.
@@ -100,7 +100,7 @@ message_commands_succession = {
 
 class Message:
     command: Commands
-    tlvs: list[TLVS]
+    tlvs: list
 
     def __str__(self):
         return "Message(command={}, tlvs={})".format(self.command, self.tlvs)
