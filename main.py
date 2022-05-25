@@ -53,10 +53,10 @@ def proxy(listenport):
             print(type)
             with open(log, "a+") as f:
                 print("Crash?")
-                f.write("----- ----- ----- ----- -----")
-                f.write("Crashed with rcpde: " + rcode)
-                f.write(res.__str__() + '\n')
-                f.write("----- ----- ----- ----- -----")
+                f.write("----- ----- ----- ----- ----- "+"\n")
+                f.write("Crashed with rcpde: " + rcode +"\n")
+                f.write(res.__str__() + "\n")
+                f.write("----- ----- ----- ----- -----\n")
             rcode = 0
 
 
