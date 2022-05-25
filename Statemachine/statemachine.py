@@ -1,6 +1,4 @@
-import commands
-from tlvs import TLVS
-from commands import Commands
+from Enums.commands import Commands
 
 class Thread:
     states = ["Idle", "Processing_Discover", "Processing_Parent_Request", "Processing_ChildID_Request"]
