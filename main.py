@@ -69,6 +69,7 @@ def communication_aflnet(listenport):
 
 
 def communication_OT(port):
+    global prev_message
     sock = socket.socket(socket.AF_INET,
                          socket.SOCK_DGRAM)
     i = inotify.adapters.Inotify()
