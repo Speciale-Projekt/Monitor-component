@@ -23,7 +23,7 @@ openthread_args = '../openthread/output/simulation/bin/ot-cli-ftd 1 --master --d
                   '"{\\"Network_Key\\": \\"cf70867da8d41fbdb614aa9677addf9e\\", \\"PAN_ID\\": \\"0x7063\\"}" '
 
 rcode = 0
-prev_message: Message
+prev_message: Message = None
 
 
 def openthread():
