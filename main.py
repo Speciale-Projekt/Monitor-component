@@ -23,7 +23,7 @@ openthread_args = '../openthread/output/simulation/bin/ot-cli-ftd 1 --master --d
                   '"{\\"Network_Key\\": \\"cf70867da8d41fbdb614aa9677addf9e\\", \\"PAN_ID\\": \\"0x7063\\"}" '
 
 rcode = 0
-prev_package: Message
+prev_message: Message
 
 
 def openthread():
@@ -69,7 +69,6 @@ def communication_aflnet(listenport):
 
 
 def communication_OT(port):
-    global prev_message
     sock = socket.socket(socket.AF_INET,
                          socket.SOCK_DGRAM)
     i = inotify.adapters.Inotify()
