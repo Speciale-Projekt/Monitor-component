@@ -4,6 +4,7 @@ import socket
 import subprocess
 import sys
 import threading
+from datetime import datetime
 
 import inotify.adapters
 
@@ -60,6 +61,7 @@ def communication_aflnet(listenport):
             with open(log, "a+") as f:
                 print("Crash?")
                 f.write("----- ----- ----- ----- ----- "+"\n")
+                f.write(datetime.now().strftime("%H:%M:%S"))
                 f.write("Crashed with rcode: " + str(rcode) +"\n")
                 f.write(res.__str__() + "\n")
                 f.write("----- ----- ----- ----- -----\n")
@@ -99,8 +101,9 @@ def communication_OT(port):
                         with open("stmch_crash.txt", "a+") as file:
                             file.write(
                                 f"{'-' * 38}\n"
-                                f"------ Invalid order detected! -------\n"
+                                f"------ Invalid order detected or missing TLV! -------\n"
                                 f"{'-' * 20}\n"
+                                f'{datetime.now().strftime("%H:%M:%S")}'
                                 f"{prev_message.__str__()}\n"
                                 f"resulted in: {msg.__str__()}\n"
                                 "expected:" + f'\n\t-'.join([key for key in
