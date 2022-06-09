@@ -52,7 +52,7 @@ def communication_aflnet(listenport):
     while True:
         try:
             data, addr = aflnet.recvfrom(1024)  # buffer size is 1024 bytes
-            res = p.assign_command_type(data)
+            res = p.assign_command_type(data[:-1])
             print(res[0]['Name'])
             # sm.advance_state(res[0]['Name'])
             # print(sm.to_str())
@@ -113,9 +113,9 @@ def communication_OT(port):
                                 f"{'-' * 53}\n"
                                 f"------ Invalid order detected or missing TLV! -------\n"
                                 f"{'-' * 53}\n"
-                                f'[{datetime.now().isoformat()}] '
+                                f'[{datetime.now().isoformat()}] \n'
                                 f"{prev_message.__str__()}\n"
-                                f"resulted in: {msg.__str__()}\n"
+                                f"\n====resulted in===== \{msg.__str__()}\n"
                                 f"extra info: {extra}\n"
                             )
 
