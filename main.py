@@ -18,12 +18,20 @@ ip = "127.0.0.1"
 
 filename = pathlib.Path("child.bin")
 log = pathlib.Path("log.txt")
+smt_crash_log = pathlib.Path("stmch_crash.txt")
 sm = ThreadStateMachine(Thread.states[0])
 openthread_args = '../openthread/output/simulation/bin/ot-cli-ftd 1 --master --dataset ' \
                   '"{\\"Network_Key\\": \\"cf70867da8d41fbdb614aa9677addf9e\\", \\"PAN_ID\\": \\"0x7063\\"}" '
 
 rcode = 0
 prev_message: Message = None
+
+
+def init_log(log_path):
+    with open(log_path, "w") as f:
+        f.write(f"Inti: {datetime.now().isoformat()}")
+
+
 
 
 def openthread():
@@ -60,9 +68,9 @@ def communication_aflnet(listenport):
         if rcode != 0:
             with open(log, "a+") as f:
                 print("Crash?")
-                f.write("----- ----- ----- ----- ----- "+"\n")
-                f.write(datetime.now().strftime("%H:%M:%S"))
-                f.write("Crashed with rcode: " + str(rcode) +"\n")
+                f.write("----- ----- ----- ----- ----- " + "\n")
+                f.write(datetime.now().isoformat())
+                f.write("Crashed with rcode: " + str(rcode) + "\n")
                 f.write(res.__str__() + "\n")
                 f.write("----- ----- ----- ----- -----\n")
             rcode = 0
@@ -98,12 +106,12 @@ def communication_OT(port):
                         continue
                     if not valid_order_for_messages(prev_message, msg):
                         print("Invalid order")
-                        with open("stmch_crash.txt", "a+") as file:
+                        with open(, "a+") as file:
                             file.write(
                                 f"{'-' * 38}\n"
                                 f"------ Invalid order detected or missing TLV! -------\n"
                                 f"{'-' * 20}\n"
-                                f'{datetime.now().strftime("%H:%M:%S")}'
+                                f'{datetime.now().isoformat()}'
                                 f"{prev_message.__str__()}\n"
                                 f"resulted in: {msg.__str__()}\n"
                                 "expected:" + f'\n\t-'.join([key for key in
@@ -132,6 +140,9 @@ def _main():
     id = int(sys.argv[1])
     listenport = 10000 + id
     port = 4000 + id
+
+    init_log(log)
+    init_log(smt_crash_log)
 
     print("Id of this device is: ", id)
     print("Listen port is: ", listenport)
