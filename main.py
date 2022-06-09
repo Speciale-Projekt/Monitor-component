@@ -106,7 +106,7 @@ def communication_OT(port):
                         continue
                     if not valid_order_for_messages(prev_message, msg):
                         print("Invalid order")
-                        with open(, "a+") as file:
+                        with open(smt_crash_log, "a+") as file:
                             file.write(
                                 f"{'-' * 38}\n"
                                 f"------ Invalid order detected or missing TLV! -------\n"
