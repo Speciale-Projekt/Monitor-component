@@ -29,7 +29,7 @@ prev_message: Message = None
 
 def init_log(log_path):
     with open(log_path, "w") as f:
-        f.write(f"Inti: {datetime.now().isoformat()}")
+        f.write(f"Inti: {datetime.now().isoformat()}\n\n")
 
 
 
@@ -103,21 +103,20 @@ def communication_OT(port):
                     msg.tlvs = cmd_type[0].get('tlvs')
                     msg.command = cmd_type[0].get('Name')
                     if not prev_message:
+                        print("test")
                         continue
-                    if not valid_order_for_messages(prev_message, msg):
+                    is_valid, extra = valid_order_for_messages(prev_message, msg)
+                    if not is_valid:
                         print("Invalid order")
                         with open(smt_crash_log, "a+") as file:
                             file.write(
-                                f"{'-' * 38}\n"
+                                f"{'-' * 53}\n"
                                 f"------ Invalid order detected or missing TLV! -------\n"
-                                f"{'-' * 20}\n"
-                                f'{datetime.now().isoformat()}'
+                                f"{'-' * 53}\n"
+                                f'[{datetime.now().isoformat()}] '
                                 f"{prev_message.__str__()}\n"
                                 f"resulted in: {msg.__str__()}\n"
-                                "expected:" + f'\n\t-'.join([key for key in
-                                                             message_commands_succession[prev_message.command].get(
-                                                                 'succession').keys()]) + "\n"
-
+                                f"extra info: {extra}\n"
                             )
 
         else:
@@ -147,10 +146,10 @@ def _main():
     print("Id of this device is: ", id)
     print("Listen port is: ", listenport)
     print("Aflnet local port is:", port)
-    openthreadthread = threading.Thread(target=openthread)
+    #openthreadthread = threading.Thread(target=openthread)
     thread = threading.Thread(target=communication_OT, args=(port,))
     thread.start()
-    openthreadthread.start()
+    #openthreadthread.start()
     communication_aflnet(listenport)
 
 
