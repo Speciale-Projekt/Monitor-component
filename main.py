@@ -146,10 +146,10 @@ def _main():
     print("Id of this device is: ", id)
     print("Listen port is: ", listenport)
     print("Aflnet local port is:", port)
-    #openthreadthread = threading.Thread(target=openthread)
+    openthreadthread = threading.Thread(target=openthread)
     thread = threading.Thread(target=communication_OT, args=(port,))
     thread.start()
-    #openthreadthread.start()
+    openthreadthread.start()
     communication_aflnet(listenport)
 
 
