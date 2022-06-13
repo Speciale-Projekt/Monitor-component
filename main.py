@@ -103,7 +103,6 @@ def communication_OT(port):
                     msg.command = cmd_type[0].get('Name')
                     msg.total_msg = cmd_type[0].get('total_message')
                     if not prev_message:
-                        print("test")
                         continue
                     is_valid, extra = valid_order_for_messages(prev_message, msg)
                     if not is_valid:
