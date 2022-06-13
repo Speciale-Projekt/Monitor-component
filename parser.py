@@ -76,7 +76,7 @@ def assign_command_type(message: bin, res=None) -> list:
     else:
         command = Commands.UNKNOWN
 
-    res.append({"Name":command, **{"tlvs": tlvs}, **{"total_message": print_hex(message[0:next_message_index])}})
+    res.append({"Name": command, **{"tlvs": tlvs}, **{"total_message": print_hex(message[0:next_message_index])}})
     if next_message_index is not None:
         return assign_command_type(message[next_message_index:], res)
     else:

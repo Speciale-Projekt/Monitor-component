@@ -101,9 +101,10 @@ message_commands_succession = {
 class Message:
     command: Commands
     tlvs: list
+    total_msg: str
 
     def __str__(self):
-        return "Message(command={}, tlvs={})".format(self.command, self.tlvs)
+        return "Message(command={}, tlvs={}, total_msg={})".format(self.command, self.tlvs, self.total_msg)
 
 
 def valid_order_for_messages(previous_message: Message, this_message: Message):

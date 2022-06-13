@@ -32,8 +32,6 @@ def init_log(log_path):
         f.write(f"Inti: {datetime.now().isoformat()}\n\n")
 
 
-
-
 def openthread():
     global rcode
     while True:
@@ -61,9 +59,10 @@ def communication_aflnet(listenport):
             msg = Message()
             msg.tlvs = res[0].get('tlvs')
             msg.command = res[0].get('Name')
+            msg.total_msg = res[0].get('total_message')
             prev_message = msg
 
-        except:
+        except Exception as _:
             pass
         if rcode != 0:
             with open(log, "a+") as f:
@@ -71,7 +70,7 @@ def communication_aflnet(listenport):
                 f.write("----- ----- ----- ----- ----- " + "\n")
                 f.write(datetime.now().isoformat())
                 f.write("Crashed with rcode: " + str(rcode) + "\n")
-                f.write(res.__str__() + "\n")
+                f.write(msg.__str__() + "\n")
                 f.write("----- ----- ----- ----- -----\n")
             rcode = 0
 
@@ -102,6 +101,7 @@ def communication_OT(port):
                     msg: Message = Message()
                     msg.tlvs = cmd_type[0].get('tlvs')
                     msg.command = cmd_type[0].get('Name')
+                    msg.total_msg = cmd_type[0].get('total_message')
                     if not prev_message:
                         print("test")
                         continue
