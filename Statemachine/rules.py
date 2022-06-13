@@ -5,7 +5,7 @@ from Enums.tlvs import TLVS
 
 
 class ContainedTLVS:
-    def __init__(self, optional_tlvs: list = None, mandatory_tlvs: list = None):
+    def __init__(self, optional_tlvs: list[TLVS] = None, mandatory_tlvs: list[TLVS] = None):
         if mandatory_tlvs is None:
             mandatory_tlvs = []
         if optional_tlvs is None:
@@ -21,16 +21,23 @@ class ContainedTLVS:
         :return: bool for if the tlvs are valid.
         """
 
-        if len(tlvs) == 0 and (len(self.mandatory_tlvs) > 0 or len(self.optional_tlvs) > 0) \
-                or len(tlvs) != len(self.mandatory_tlvs) + len(self.optional_tlvs):
+        if len(tlvs) != len(self.mandatory_tlvs) + len(self.optional_tlvs):
             return False
-        for tlv in self.mandatory_tlvs:
-            if tlv not in tlvs:
+
+        mandatory_tlvs = [x.name for x in self.mandatory_tlvs]
+        optional_tlvs = [x.name for x in self.optional_tlvs]
+
+        # Check if tlvs is type list
+        if not isinstance(tlvs, list):
+            tlvs = [tlvs]
+        for tt in mandatory_tlvs:
+            if tt not in tlvs:
                 return False
 
-        for tlv in tlvs:
-            if tlv not in self.mandatory_tlvs and tlv not in self.optional_tlvs:
+        for tt in tlvs:
+            if tt not in mandatory_tlvs and tt not in optional_tlvs:
                 return False
+
 
         return True
 

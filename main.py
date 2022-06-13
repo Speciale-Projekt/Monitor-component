@@ -117,6 +117,8 @@ def communication_OT(port):
                                 f"\n====resulted in===== \n{msg.__str__()}\n"
                                 f"extra info: {extra}\n"
                             )
+                        global prev_message
+                        prev_message = None
 
         else:
             # check what files are in notify watchlist
