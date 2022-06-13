@@ -24,18 +24,16 @@ class ContainedTLVS:
         if len(tlvs) != len(self.mandatory_tlvs) + len(self.optional_tlvs):
             return False
 
-        mandatory_tlvs = [x.name for x in self.mandatory_tlvs]
-        optional_tlvs = [x.name for x in self.optional_tlvs]
 
         # Check if tlvs is type list
         if not isinstance(tlvs, list):
             tlvs = [tlvs]
-        for tt in mandatory_tlvs:
+        for tt in self.mandatory_tlvs:
             if tt not in tlvs:
                 return False
 
         for tt in tlvs:
-            if tt not in mandatory_tlvs and tt not in optional_tlvs:
+            if tt not in self.mandatory_tlvs and tt not in self.optional_tlvs:
                 return False
 
 
@@ -126,8 +124,9 @@ def valid_order_for_messages(previous_message: Message, this_message: Message):
         raise ValueError("Value cannot be None")
 
     if this_message.command in message_commands_succession \
-            and message_commands_succession[this_message.command].get("TLVS").validate(this_message.tlvs):
-        return True
+            and message_commands_succession[this_message.command].get("TLVS").validate(
+        [kk.get('type') for kk in this_message.tlvs]):
+        return True, "This message is a parent message... and its valid, so who cares?"
 
     if previous_message is None:
         raise ValueError("Previous message cannot be None when this_message is not the first message")
@@ -137,9 +136,9 @@ def valid_order_for_messages(previous_message: Message, this_message: Message):
             and message_commands_succession[previous_message.command].get("succession").get(this_message.command):
         # Check if TLVs are valid
         if message_commands_succession[previous_message.command].get("succession").get(this_message.command).validate(
-                this_message.tlvs) and message_commands_succession[previous_message.command].get("TLVS").validate(
-            previous_message.tlvs):
-            return True
+                [kk.get('type') for kk in this_message.tlvs]) and message_commands_succession[previous_message.command]\
+                .get("TLVS").validate([kk.get('type') for kk in previous_message.tlvs]):
+            return True, "Everything is a-ok"
         else:
             return False, "Commands are valid, but TLVs are not valid"
     return False, "Commands are not valid"

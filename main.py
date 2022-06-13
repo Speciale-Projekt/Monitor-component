@@ -76,6 +76,7 @@ def communication_aflnet(listenport):
 
 
 def communication_OT(port):
+    global prev_message
     sock = socket.socket(socket.AF_INET,
                          socket.SOCK_DGRAM)
     i = inotify.adapters.Inotify()
@@ -117,8 +118,7 @@ def communication_OT(port):
                                 f"\n====resulted in===== \n{msg.__str__()}\n"
                                 f"extra info: {extra}\n"
                             )
-                        global prev_message
-                        prev_message = None
+                prev_message = None
 
         else:
             # check what files are in notify watchlist
